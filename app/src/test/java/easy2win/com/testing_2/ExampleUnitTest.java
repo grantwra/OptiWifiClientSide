@@ -1,4 +1,4 @@
-package com.example.optiwificlient;
+package easy2win.com.testing_2;
 
 import org.junit.Test;
 
