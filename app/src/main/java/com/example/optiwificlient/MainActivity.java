@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,9 +17,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.io.File;
+
 
 /*public class MainActivity extends AppCompatActivity {
 
@@ -31,22 +37,47 @@ import java.util.List;
 
 public class MainActivity extends Activity implements View.OnClickListener
 {
-    WifiManager wifi;
+    static WifiManager wifi;
     ListView lv;
     TextView textStatus;
    // TextView tv;
     Button buttonScan;
-    int size = 0;
-    List<ScanResult> results;
+    static int size = 0;
+    static List<ScanResult> results;
 
-    String ITEM_KEY = "key";
-    ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
-    SimpleAdapter adapter;
+    static String ITEM_KEY = "key";
+    static ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
+    static SimpleAdapter adapter;
+
+    static Context context2;
 
     /* Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+
+        String FILENAME = "newScanData";
+        File newFile = new File(FILENAME);
+
+        FileOutputStream fileOutputStream;
+
+        try {
+            fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+
+            String IMEI = Settings.Secure.ANDROID_ID;
+
+            fileOutputStream.write(IMEI.getBytes());
+
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        context2 = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -103,5 +134,7 @@ public class MainActivity extends Activity implements View.OnClickListener
         { }
 
     }
+
+
 }
 
