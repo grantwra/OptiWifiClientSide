@@ -64,7 +64,7 @@ public class MainActivity extends Activity implements View.OnClickListener
         try {
             fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
 
-            String IMEI = Settings.Secure.ANDROID_ID;
+            String IMEI = Settings.Secure.ANDROID_ID + "\n";
 
             fileOutputStream.write(IMEI.getBytes());
 

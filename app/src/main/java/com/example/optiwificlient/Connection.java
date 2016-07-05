@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -13,7 +14,13 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.io.File;
+
+
 
 
 public class Connection extends BroadcastReceiver {
@@ -70,6 +77,34 @@ public class Connection extends BroadcastReceiver {
         View newView = null;
         mainActivity.onClick(newView);
         */
+
+     /*   FileOutputStream fileOutputStream;
+
+        try {
+            fileOutputStream = openFileOutput("newScanData", Context.MODE_PRIVATE);
+
+        } catch (){
+
+        }
+    */
+
+
+        FileOutputStream fileOutputStream;
+
+        try {
+            fileOutputStream = context.openFileOutput("newScanData", Context.MODE_APPEND);
+
+            String IMEI = "this is a test!\n";
+
+            fileOutputStream.write(IMEI.getBytes());
+
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
