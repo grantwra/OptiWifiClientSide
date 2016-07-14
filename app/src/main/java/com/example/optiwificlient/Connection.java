@@ -1,12 +1,14 @@
 package com.example.optiwificlient;
 
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.JsonWriter;
 import android.view.View;
@@ -16,6 +18,10 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -24,11 +30,14 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.io.File;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 public class Connection extends BroadcastReceiver {
 
     //@Override
+
+
     public void onReceive(Context context, Intent intent) {
 
 /*
@@ -116,34 +125,94 @@ public class Connection extends BroadcastReceiver {
         List<ScanResult> scanResultList;
         scanResultList = MainActivity.wifi.getScanResults();
 
-        for(int i = 0; i < scanResultList.size(); i++){
+        for(int i = 0; i < scanResultList.size(); i++) {
             ScanResult result = scanResultList.get(i);
+            String BSSID = result.BSSID;
+            String capabilities = result.capabilities;
+            ///int centerFreq0 = result.centerFreq0;
+            //int centerFreq1 = result.centerFreq1;
+            //int channelWidth = result.channelWidth;
+            int level = result.level;
+            //CharSequence operatorFriendlyName = result.operatorFriendlyName;
+            String SSID = result.SSID;
+            //CharSequence venueName = result.venueName;
+            int frequency = result.frequency;
+            long timestamp = result.timestamp;
+
+
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("timestamp", timestamp);
+                obj.put("frequency", frequency);
+                obj.put("capabilities", capabilities);
+                obj.put("level", level);
+                obj.put("SSID", SSID);
+                JSONArray array = new JSONArray();
+                array.put(obj);
+                JSONObject finall = new JSONObject();
+                finall.put(BSSID, array);
+                String finalString = finall.toString();
+                finalString = finalString + "\n";
+                fileOutputStream = context.openFileOutput(doesFileExist.getName(), Context.MODE_APPEND);
+
+                fileOutputStream.write(finalString.getBytes());
+
+                fileOutputStream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 
         }
 
-        try {
-            FileOutputStream out = new FileOutputStream(doesFileExist.getName());
-            jsonWriter = new JsonWriter(new OutputStreamWriter(out,"UTF-8"));
+
+        /****
+        try { ***/
+            //FileOutputStream out = new FileOutputStream(doesFileExist.getName());
+            //jsonWriter = new JsonWriter(new OutputStreamWriter(out,"UTF-8"));
+            //jsonWriter.setIndent("  ");
+            /******
             jsonWriter.beginObject();
             jsonWriter.name("test");
             jsonWriter.beginArray();
             jsonWriter.beginObject();
-            jsonWriter.name("hello");
-            jsonWriter.value("from the other side");
+            jsonWriter.name("hello").value("from the other side");
             jsonWriter.endObject();
             jsonWriter.endArray();
             jsonWriter.endObject();
+
+
+            JSONObject obj = new JSONObject();
+            obj.put("test","name");
+            obj.put("newtest", "hello");
+            JSONArray array = new JSONArray();
+            array.put(obj);
+            JSONObject finall = new JSONObject();
+            finall.put("BSID", array);
+            String finalString = finall.toString();
+            finalString = finalString + "\n";
+            fileOutputStream = context.openFileOutput(doesFileExist.getName(), Context.MODE_APPEND);
+
+            fileOutputStream.write(finalString.getBytes());
+
+            fileOutputStream.close();
+
+
             //jsonWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } ****/ /**finally {
             try {
                 jsonWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }****/
 
 
     }
