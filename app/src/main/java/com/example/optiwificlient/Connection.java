@@ -5,8 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
+import android.util.JsonWriter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -16,11 +18,12 @@ import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.io.File;
-
-
+import java.util.List;
 
 
 public class Connection extends BroadcastReceiver {
@@ -88,7 +91,7 @@ public class Connection extends BroadcastReceiver {
         }
     */
 
-
+    // **** this is just a testing try catch block
         FileOutputStream fileOutputStream;
 
         try {
@@ -105,6 +108,43 @@ public class Connection extends BroadcastReceiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        JsonWriter jsonWriter = null;
+
+        File doesFileExist = new File("scans.json");
+        List<ScanResult> scanResultList;
+        scanResultList = MainActivity.wifi.getScanResults();
+
+        for(int i = 0; i < scanResultList.size(); i++){
+            ScanResult result = scanResultList.get(i);
+
+
+        }
+
+        try {
+            FileOutputStream out = new FileOutputStream(doesFileExist.getName());
+            jsonWriter = new JsonWriter(new OutputStreamWriter(out,"UTF-8"));
+            jsonWriter.beginObject();
+            jsonWriter.name("test");
+            jsonWriter.beginArray();
+            jsonWriter.beginObject();
+            jsonWriter.name("hello");
+            jsonWriter.value("from the other side");
+            jsonWriter.endObject();
+            jsonWriter.endArray();
+            jsonWriter.endObject();
+            //jsonWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                jsonWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 

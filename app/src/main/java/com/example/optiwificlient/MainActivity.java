@@ -65,7 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
+     private GoogleApiClient client;
 
 
     /* Called when the activity is first created. */
@@ -173,6 +173,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Uri.parse("android-app://com.example.optiwificlient/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+
     }
 
     @Override
@@ -181,6 +182,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "Main Page", // TODO: Define a title for the content shown.
@@ -195,6 +197,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         client.disconnect();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void time_map(ArrayList<ScanResult> results, int size) {
 
         String BBSid = results.get(size).BSSID;
