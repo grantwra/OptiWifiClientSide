@@ -94,6 +94,7 @@ public class MainActivity extends Activity {
         }
 
 
+
         wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (!wifi.isWifiEnabled()) {
             wifi.setWifiEnabled(true);
@@ -110,6 +111,10 @@ public class MainActivity extends Activity {
             String value = map.get(name).toString();
             System.out.println(name + "  " + value);
         }*/
+
+
+
+
     }// end onCreate
 
 
@@ -159,25 +164,28 @@ public class MainActivity extends Activity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void time_map(ArrayList<ScanResult> results, int size) {
 
-        String BBSid = results.get(size).BSSID;
+        for ( int i = 0; i < size; i++) {
 
-        if (map.containsKey(BBSid) == false) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                map.put(results.get(size).BSSID, results.get(size).timestamp);
-            }
-        } else {
-            if (map.get(BBSid) == results.get(size).timestamp) {
-                map.remove(BBSid);
+            String BBSid = results.get(size).BSSID;
+
+            if (map.containsKey(BBSid) == false) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     map.put(results.get(size).BSSID, results.get(size).timestamp);
                 }
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    map.put(results.get(size).BSSID, results.get(size).timestamp);
+                if (map.get(BBSid) == results.get(size).timestamp) {
+                    map.remove(BBSid);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        map.put(results.get(size).BSSID, results.get(size).timestamp);
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        map.put(results.get(size).BSSID, results.get(size).timestamp);
+                    }
                 }
-            }
 
-        }// end else
+            }// end else
+        }// end for
     }// end method
 
     public void clear_map_temp ( ArrayList<ScanResult> results, int size){
