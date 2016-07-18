@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,12 +45,8 @@ import java.io.File;
     }
 }*/
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity {
     static WifiManager wifi;
-    ListView lv;
-    TextView textStatus;
-    // TextView tv;
-    Button buttonScan;
     static int size = 0;
     static List<ScanResult> results;
 
@@ -71,8 +68,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     /* Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(null);
+        //setContentView(R.layout.activity_main);
 
-        // Im adding this comment as a test 
+        // Im adding this comment as a test
 
         String FILENAME = "newScanData";
         File newFile = new File(FILENAME);
@@ -95,36 +94,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
 
-        context2 = this;
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        textStatus = (TextView) findViewById(R.id.textStatus);
-
-        buttonScan = (Button) findViewById(R.id.buttonScan);
-        buttonScan.setOnClickListener(this);
-        lv = (ListView) findViewById(R.id.list);
-        //  tv = (TextView)findViewById(R.id.textView);
-
-
         wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled() == false) {
-            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
+        if (!wifi.isWifiEnabled()) {
             wifi.setWifiEnabled(true);
         }
-        this.adapter = new SimpleAdapter(MainActivity.this, arraylist, R.layout.activity_main, new String[]{ITEM_KEY}, new int[]{R.id.textStatus});
-        lv.setAdapter(this.adapter);
 
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context c, Intent intent) {
-                results = wifi.getScanResults();
-                size = results.size();
-            }
-        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        Connection broadcastReciever = new Connection();
+        registerReceiver(broadcastReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        //registerReceiver(broadcastReciever, new IntentFilter(new Action("android.net.wifi.SCAN_RESULTS")));
 
         /*for( String name : map.keySet()){
             String value = map.get(name).toString();
@@ -132,29 +112,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }*/
     }// end onCreate
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void onClick(View view) {
-        // arraylist.clear();
-        wifi.startScan();
-
-        Toast.makeText(this, "Scanning...." + size, Toast.LENGTH_SHORT).show();
-        try {
-            size = size - 1;
-            while (size >= 0) {
-                HashMap<String, String> item = new HashMap<String, String>();
-                item.put(ITEM_KEY, results.get(size).SSID + "  " + results.get(size).capabilities);
-               /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    map.put(results.get(size).BSSID, results.get(size).timestamp);
-                }*/
-                time_map((ArrayList<ScanResult>) results, size);
-                arraylist.add(item);
-                size--;
-                adapter.notifyDataSetChanged();
-            }
-        } catch (Exception e) {
-        }
-
-    }
 
 
     @Override
