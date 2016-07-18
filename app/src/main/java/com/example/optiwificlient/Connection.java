@@ -32,6 +32,8 @@ import java.io.File;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import static android.net.wifi.WifiManager.calculateSignalLevel;
+
 
 public class Connection extends BroadcastReceiver {
 
@@ -138,6 +140,7 @@ public class Connection extends BroadcastReceiver {
             //CharSequence venueName = result.venueName;
             int frequency = result.frequency;
             long timestamp = result.timestamp;
+            int signalStrength = calculateSignalLevel(level, 100);
 
 
             try {
@@ -146,6 +149,7 @@ public class Connection extends BroadcastReceiver {
                 obj.put("frequency", frequency);
                 obj.put("capabilities", capabilities);
                 obj.put("level", level);
+                obj.put("Signal Strength", signalStrength);
                 obj.put("SSID", SSID);
                 JSONArray array = new JSONArray();
                 array.put(obj);
