@@ -105,6 +105,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //  tv = (TextView)findViewById(R.id.textView);
 
 
+
+
+
         wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (wifi.isWifiEnabled() == false) {
             Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
@@ -128,6 +131,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             String value = map.get(name).toString();
             System.out.println(name + "  " + value);
         }*/
+
+
+
+
     }// end onCreate
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -144,7 +151,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     map.put(results.get(size).BSSID, results.get(size).timestamp);
                 }*/
-                time_map((ArrayList<ScanResult>) results, size);
+             //   time_map((ArrayList<ScanResult>) results, size);
                 arraylist.add(item);
                 size--;
                 adapter.notifyDataSetChanged();
