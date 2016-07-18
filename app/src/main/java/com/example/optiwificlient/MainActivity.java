@@ -72,6 +72,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
+        // Im adding this comment as a test 
+
         String FILENAME = "newScanData";
         File newFile = new File(FILENAME);
 
