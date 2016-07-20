@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
 import java.util.List;
@@ -36,6 +37,8 @@ import static android.net.wifi.WifiManager.calculateSignalLevel;
 
 
 public class Connection extends BroadcastReceiver {
+
+    HashMap<String, Long> map;
 
     //@Override
 
@@ -127,6 +130,16 @@ public class Connection extends BroadcastReceiver {
         List<ScanResult> scanResultList;
         scanResultList = MainActivity.wifi.getScanResults();
 
+        /*// watch begins
+
+        time_map((ArrayList<ScanResult>) scanResultList, scanResultList.size());
+
+        clear_map_temp((ArrayList<ScanResult>) scanResultList, scanResultList.size());
+
+        ArrayList<ScanResult> final_list = my_final_list((ArrayList<ScanResult>) scanResultList, map);
+
+        // watch ends*/
+
         for(int i = 0; i < scanResultList.size(); i++) {
             ScanResult result = scanResultList.get(i);
             String BSSID = result.BSSID;
@@ -170,7 +183,7 @@ public class Connection extends BroadcastReceiver {
             }
 
 
-        }
+        }// end for
 
 
         /****
@@ -221,4 +234,73 @@ public class Connection extends BroadcastReceiver {
 
     }
 
-}
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void time_map(ArrayList<ScanResult> results, int size) {
+
+        for ( int i = 0; i < size; i++) {
+
+            String BBSid = results.get(i).BSSID;
+
+            if (map.containsKey(BBSid) == false) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    map.put(results.get(i).BSSID, results.get(i).timestamp);
+                }
+            } else {
+                if (map.get(BBSid) == results.get(i).timestamp) {
+                    map.remove(BBSid);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        map.put(results.get(i).BSSID, results.get(i).timestamp);
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        map.put(results.get(i).BSSID, results.get(i).timestamp);
+                    }
+                }
+
+            }// end else
+        }// end for
+    }// end method
+
+    public void clear_map_temp ( ArrayList<ScanResult> results, int size){
+        //Collection<Long> temp = map.values();
+        //  Iterator it = map.entrySet().iterator();
+        ArrayList<String> local_list_ids = new ArrayList<String>();
+
+        for (String key : map.keySet()) {
+            for( int i = 0; i < results.size(); i++) {
+                if (key == results.get(i).BSSID) {
+                    local_list_ids.add(key);
+                    // Concurrent modification
+                    //map.remove(key);
+                }
+            }// end nested for
+        }// end for each
+        for(int j = 0; j < local_list_ids.size(); j++){
+            String id = local_list_ids.get(j);
+            map.remove(id);
+        }// end for
+
+
+    }// end method
+
+
+    public ArrayList<ScanResult> my_final_list (ArrayList<ScanResult> results, HashMap<String, Long> map)
+    {
+        ArrayList<ScanResult> output = new ArrayList<ScanResult>();
+
+        for (String key : map.keySet()) {
+            for( int i = 0; i < results.size(); i++) {
+                if (key == results.get(i).BSSID) {
+                    // local_list_ids.add(key);
+                    output.add(results.get(i));
+                    // Concurrent modification
+                    //map.remove(key);
+                }
+            }// end nested for
+        }// end for each
+
+        return output;
+    }// end method
+
+
+}// end class

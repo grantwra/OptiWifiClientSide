@@ -166,21 +166,21 @@ public class MainActivity extends Activity {
 
         for ( int i = 0; i < size; i++) {
 
-            String BBSid = results.get(size).BSSID;
+            String BBSid = results.get(i).BSSID;
 
             if (map.containsKey(BBSid) == false) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    map.put(results.get(size).BSSID, results.get(size).timestamp);
+                    map.put(results.get(i).BSSID, results.get(i).timestamp);
                 }
             } else {
-                if (map.get(BBSid) == results.get(size).timestamp) {
+                if (map.get(BBSid) == results.get(i).timestamp) {
                     map.remove(BBSid);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        map.put(results.get(size).BSSID, results.get(size).timestamp);
+                        map.put(results.get(i).BSSID, results.get(i).timestamp);
                     }
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        map.put(results.get(size).BSSID, results.get(size).timestamp);
+                        map.put(results.get(i).BSSID, results.get(i).timestamp);
                     }
                 }
 
@@ -208,6 +208,24 @@ public class MainActivity extends Activity {
         }// end for
 
 
+    }// end method
+
+    public ArrayList<ScanResult> my_final_list (ArrayList<ScanResult> results, HashMap<String, Long> map)
+    {
+        ArrayList<ScanResult> output = new ArrayList<ScanResult>();
+
+        for (String key : map.keySet()) {
+            for( int i = 0; i < results.size(); i++) {
+                if (key == results.get(i).BSSID) {
+                   // local_list_ids.add(key);
+                    output.add(results.get(i));
+                    // Concurrent modification
+                    //map.remove(key);
+                }
+            }// end nested for
+        }// end for each
+
+        return output;
     }// end method
 
 }
