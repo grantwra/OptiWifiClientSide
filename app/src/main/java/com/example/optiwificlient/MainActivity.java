@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
     static Context context2;
 
 
-    HashMap<String, Long> map;
+    static HashMap<String, Long> map;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -69,6 +69,9 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
+
+        map = new HashMap<String, Long>();
+
         //setContentView(R.layout.activity_main);
 
         // Im adding this comment as a test

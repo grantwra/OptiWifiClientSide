@@ -45,65 +45,10 @@ public class Connection extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
 
-/*
+
+        map = MainActivity.map;
 
 
-        wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled() == false)
-        {
-            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-            wifi.setWifiEnabled(true);
-        }
-        this.adapter = new SimpleAdapter(MainActivity.this, arraylist, R.layout.activity_main, new String[] { ITEM_KEY }, new int[] { R.id.textStatus });
-        lv.setAdapter(this.adapter);
-
-        registerReceiver(new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context c, Intent intent)
-            {
-                results = wifi.getScanResults();
-                size = results.size();
-            }
-        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));*/
-/*
-        MainActivity.wifi.startScan();
-
-       // Toast.makeText(this, "Scanning...." + MainActivity.size, Toast.LENGTH_SHORT).show();
-        try
-        {
-            MainActivity.size = MainActivity.size - 1;
-            while (MainActivity.size >= 0)
-            {
-                HashMap<String, String> item = new HashMap<String, String>();
-                item.put(MainActivity.ITEM_KEY, MainActivity.results.get(MainActivity.size).SSID + "  " + MainActivity.results.get(MainActivity.size).capabilities);
-
-                MainActivity.arraylist.add(item);
-                MainActivity.size--;
-                MainActivity.adapter.notifyDataSetChanged();
-            }
-        }
-        catch (Exception e)
-        { }
-
-*/
-
-        //Toast.makeText(MainActivity.context2, "IM IN CONNECTION",Toast.LENGTH_LONG).show();
-
-       /* MainActivity mainActivity = new MainActivity();
-        View newView = null;
-        mainActivity.onClick(newView);
-        */
-
-     /*   FileOutputStream fileOutputStream;
-
-        try {
-            fileOutputStream = openFileOutput("newScanData", Context.MODE_PRIVATE);
-
-        } catch (){
-
-        }
-    */
 
     // **** this is just a testing try catch block
         FileOutputStream fileOutputStream;
@@ -130,7 +75,7 @@ public class Connection extends BroadcastReceiver {
         List<ScanResult> scanResultList;
         scanResultList = MainActivity.wifi.getScanResults();
 
-        /*// watch begins
+         //watch begins
 
         time_map((ArrayList<ScanResult>) scanResultList, scanResultList.size());
 
@@ -138,10 +83,28 @@ public class Connection extends BroadcastReceiver {
 
         ArrayList<ScanResult> final_list = my_final_list((ArrayList<ScanResult>) scanResultList, map);
 
-        // watch ends*/
+        try {
+            fileOutputStream = context.openFileOutput("newScanData", Context.MODE_APPEND);
 
-        for(int i = 0; i < scanResultList.size(); i++) {
-            ScanResult result = scanResultList.get(i);
+            int size = final_list.size();
+
+            String IMEI = String.valueOf(size);
+
+            fileOutputStream.write(IMEI.getBytes());
+
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // watch ends
+
+       // for(int i = 0; i < scanResultList.size(); i++) {
+         for(int i = 0; i < final_list.size(); i++){
+            ScanResult result = final_list.get(i);
             String BSSID = result.BSSID;
             String capabilities = result.capabilities;
             ///int centerFreq0 = result.centerFreq0;
@@ -184,56 +147,12 @@ public class Connection extends BroadcastReceiver {
 
 
         }// end for
-
-
-        /****
-        try { ***/
-            //FileOutputStream out = new FileOutputStream(doesFileExist.getName());
-            //jsonWriter = new JsonWriter(new OutputStreamWriter(out,"UTF-8"));
-            //jsonWriter.setIndent("  ");
-            /******
-            jsonWriter.beginObject();
-            jsonWriter.name("test");
-            jsonWriter.beginArray();
-            jsonWriter.beginObject();
-            jsonWriter.name("hello").value("from the other side");
-            jsonWriter.endObject();
-            jsonWriter.endArray();
-            jsonWriter.endObject();
-
-
-            JSONObject obj = new JSONObject();
-            obj.put("test","name");
-            obj.put("newtest", "hello");
-            JSONArray array = new JSONArray();
-            array.put(obj);
-            JSONObject finall = new JSONObject();
-            finall.put("BSID", array);
-            String finalString = finall.toString();
-            finalString = finalString + "\n";
-            fileOutputStream = context.openFileOutput(doesFileExist.getName(), Context.MODE_APPEND);
-
-            fileOutputStream.write(finalString.getBytes());
-
-            fileOutputStream.close();
-
-
-            //jsonWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } ****/ /**finally {
-            try {
-                jsonWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }****/
-
+        
 
     }
 
+
+    //POPULATES THE MAP
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void time_map(ArrayList<ScanResult> results, int size) {
 
@@ -268,7 +187,7 @@ public class Connection extends BroadcastReceiver {
 
         for (String key : map.keySet()) {
             for( int i = 0; i < results.size(); i++) {
-                if (key == results.get(i).BSSID) {
+                if (key != results.get(i).BSSID) {
                     local_list_ids.add(key);
                     // Concurrent modification
                     //map.remove(key);
