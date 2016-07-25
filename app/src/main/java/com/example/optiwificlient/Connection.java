@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.os.Build;
-import android.util.JsonWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import static android.net.wifi.WifiManager.calculateSignalLevel;
 
@@ -34,8 +34,6 @@ public class Connection extends BroadcastReceiver {
 
         FileOutputStream fileOutputStream;
 
-        JsonWriter jsonWriter = null;
-
         File doesFileExist = new File("scans.json");
         List<ScanResult> scanResultList;
         scanResultList = MainActivity.wifi.getScanResults();
@@ -44,7 +42,7 @@ public class Connection extends BroadcastReceiver {
 
         clear_map_temp(scanResultList, scanResultList.size());
 
-        ArrayList<ScanResult> final_list = compare_New_Scans(scanResultList, map);
+        ArrayList<ScanResult> final_list = compare_New_Scans(scanResultList);
 
          for(int i = 0; i < final_list.size(); i++){
             ScanResult result = final_list.get(i);
@@ -82,12 +80,10 @@ public class Connection extends BroadcastReceiver {
 
                 fileOutputStream.close();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
-        }
+         }
     }
 
     //POPULATES THE MAP
@@ -95,7 +91,7 @@ public class Connection extends BroadcastReceiver {
     public void time_map(ArrayList<ScanResult> results, int size) {
         for ( int i = 0; i < size; i++) {
             String BBSid = results.get(i).BSSID;
-            if (map.containsKey(BBSid) == false) {
+            if (!map.containsKey(BBSid)) {
                     map.put(results.get(i).BSSID, results.get(i).timestamp);
             } else {
                 if (map.get(BBSid) == results.get(i).timestamp) {
@@ -109,13 +105,14 @@ public class Connection extends BroadcastReceiver {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void clear_map_temp (List<ScanResult> results, int size){
-        HashMap<String,Long> local_list_ids2 = new HashMap<String, Long>();
-        ArrayList<String> toBeRemoved = new ArrayList<String>();
+        HashMap<String,Long> local_list_ids2 = new HashMap<>();
+        ArrayList<String> toBeRemoved = new ArrayList<>();
 
         for (String key : map.keySet()) {
-            for( int i = 0; i < results.size(); i++) {
-                if (key == results.get(i).BSSID) {
+            for( int i = 0; i < size; i++) {
+                if (Objects.equals(key, results.get(i).BSSID)) {
                     local_list_ids2.put(key, results.get(i).timestamp);
                 }
             }
@@ -131,8 +128,8 @@ public class Connection extends BroadcastReceiver {
         }
     }
 
-    public ArrayList<ScanResult> compare_New_Scans(List<ScanResult> results, HashMap<String, Long> mapp){
-        ArrayList<ScanResult> output = new ArrayList<ScanResult>();
+    public ArrayList<ScanResult> compare_New_Scans(List<ScanResult> results){
+        ArrayList<ScanResult> output = new ArrayList<>();
         for(int i = 0; i < results.size(); i++){
             String BSSID = results.get(i).BSSID;
             if(map.containsKey(BSSID)){
