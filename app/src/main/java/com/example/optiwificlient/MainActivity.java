@@ -2,6 +2,7 @@ package com.example.optiwificlient;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
@@ -43,6 +44,8 @@ public class MainActivity extends Activity {
 
         Connection broadcastReciever = new Connection();
         registerReceiver(broadcastReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
+        this.finishAffinity();
 
     }
 
