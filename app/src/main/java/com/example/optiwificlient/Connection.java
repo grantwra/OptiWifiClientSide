@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,7 @@ public class Connection extends BroadcastReceiver {
 
 
     public void onReceive(Context context, Intent intent) {
+
 
         map = MainActivity.map;
 
