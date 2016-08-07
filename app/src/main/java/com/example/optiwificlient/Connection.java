@@ -1,76 +1,146 @@
 package com.example.optiwificlient;
 
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.os.Build;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.File;
+import java.util.List;
+import java.util.Objects;
+
+import static android.net.wifi.WifiManager.calculateSignalLevel;
 
 
 public class Connection extends BroadcastReceiver {
 
+    HashMap<String, Long> map;
+
     //@Override
+
+
     public void onReceive(Context context, Intent intent) {
 
-/*
+
+        map = MainActivity.map;
+
+        FileOutputStream fileOutputStream;
+
+        File doesFileExist = new File("scans.json");
+        List<ScanResult> scanResultList;
+        scanResultList = MainActivity.wifi.getScanResults();
+
+        time_map((ArrayList<ScanResult>) scanResultList, scanResultList.size());
+
+        clear_map_temp(scanResultList, scanResultList.size());
+
+        ArrayList<ScanResult> final_list = compare_New_Scans(scanResultList);
+
+         for(int i = 0; i < final_list.size(); i++){
+            ScanResult result = final_list.get(i);
+            String BSSID = result.BSSID;
+            String capabilities = result.capabilities;
+            ///int centerFreq0 = result.centerFreq0;
+            //int centerFreq1 = result.centerFreq1;
+            //int channelWidth = result.channelWidth;
+            int level = result.level;
+            //CharSequence operatorFriendlyName = result.operatorFriendlyName;
+            String SSID = result.SSID;
+            //CharSequence venueName = result.venueName;
+            int frequency = result.frequency;
+            long timestamp = result.timestamp;
+            int signalStrength = calculateSignalLevel(level, 100);
 
 
-        wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled() == false)
-        {
-            Toast.makeText(getApplicationContext(), "wifi is disabled..making it enabled", Toast.LENGTH_LONG).show();
-            wifi.setWifiEnabled(true);
-        }
-        this.adapter = new SimpleAdapter(MainActivity.this, arraylist, R.layout.activity_main, new String[] { ITEM_KEY }, new int[] { R.id.textStatus });
-        lv.setAdapter(this.adapter);
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("timestamp", timestamp);
+                obj.put("frequency", frequency);
+                obj.put("capabilities", capabilities);
+                obj.put("level", level);
+                obj.put("Signal Strength", signalStrength);
+                obj.put("SSID", SSID);
+                JSONArray array = new JSONArray();
+                array.put(obj);
+                JSONObject finall = new JSONObject();
+                finall.put(BSSID, array);
+                String finalString = finall.toString();
+                finalString = finalString + "\n";
+                fileOutputStream = context.openFileOutput(doesFileExist.getName(), Context.MODE_APPEND);
 
-        registerReceiver(new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context c, Intent intent)
-            {
-                results = wifi.getScanResults();
-                size = results.size();
+                fileOutputStream.write(finalString.getBytes());
+
+                fileOutputStream.close();
+
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
             }
-        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));*/
-/*
-        MainActivity.wifi.startScan();
-
-       // Toast.makeText(this, "Scanning...." + MainActivity.size, Toast.LENGTH_SHORT).show();
-        try
-        {
-            MainActivity.size = MainActivity.size - 1;
-            while (MainActivity.size >= 0)
-            {
-                HashMap<String, String> item = new HashMap<String, String>();
-                item.put(MainActivity.ITEM_KEY, MainActivity.results.get(MainActivity.size).SSID + "  " + MainActivity.results.get(MainActivity.size).capabilities);
-
-                MainActivity.arraylist.add(item);
-                MainActivity.size--;
-                MainActivity.adapter.notifyDataSetChanged();
-            }
-        }
-        catch (Exception e)
-        { }
-
-*/
-
-        //Toast.makeText(MainActivity.context2, "IM IN CONNECTION",Toast.LENGTH_LONG).show();
-
-       /* MainActivity mainActivity = new MainActivity();
-        View newView = null;
-        mainActivity.onClick(newView);
-        */
-
+         }
     }
 
+    //POPULATES THE MAP
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void time_map(ArrayList<ScanResult> results, int size) {
+        for ( int i = 0; i < size; i++) {
+            String BBSid = results.get(i).BSSID;
+            if (!map.containsKey(BBSid)) {
+                    map.put(results.get(i).BSSID, results.get(i).timestamp);
+            } else {
+                if (map.get(BBSid) == results.get(i).timestamp) {
+                    map.remove(BBSid);
+                        map.put(results.get(i).BSSID, results.get(i).timestamp);
+                } else {
+                        map.put(results.get(i).BSSID, results.get(i).timestamp);
+                }
+
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void clear_map_temp (List<ScanResult> results, int size){
+        HashMap<String,Long> local_list_ids2 = new HashMap<>();
+        ArrayList<String> toBeRemoved = new ArrayList<>();
+
+        for (String key : map.keySet()) {
+            for( int i = 0; i < size; i++) {
+                if (Objects.equals(key, results.get(i).BSSID)) {
+                    local_list_ids2.put(key, results.get(i).timestamp);
+                }
+            }
+        }
+        for(String Key2 : map.keySet()){
+            if (!local_list_ids2.containsKey(Key2)){
+                toBeRemoved.add(Key2);
+            }
+        }
+        for(int x = 0; x < toBeRemoved.size(); x++){
+            String temp = toBeRemoved.get(x);
+            map.remove(temp);
+        }
+    }
+
+    public ArrayList<ScanResult> compare_New_Scans(List<ScanResult> results){
+        ArrayList<ScanResult> output = new ArrayList<>();
+        for(int i = 0; i < results.size(); i++){
+            String BSSID = results.get(i).BSSID;
+            if(map.containsKey(BSSID)){
+                Long timestamp = results.get(i).timestamp;
+                if(map.get(BSSID).equals(timestamp)){
+                    output.add(results.get(i));
+                }
+            }
+        }
+        return output;
+    }
 }
