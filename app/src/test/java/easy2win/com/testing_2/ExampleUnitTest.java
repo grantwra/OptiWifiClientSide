@@ -1,4 +1,5 @@
 package easy2win.com.testing_2;
+//package com.example.optiwificlient;
 
 import android.net.wifi.ScanResult;
 
@@ -19,7 +20,7 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
-    @Test
+   /* @Test
     public void map_is_working() throws Exception {
         MainActivity ma = new MainActivity();
 
@@ -33,7 +34,7 @@ public class ExampleUnitTest {
 
         HashMap<String, Long> Map = ma.map;
         assertNull(Map);
-    }
+    }*/
 
 
 }

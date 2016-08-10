@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/Testing_2.iml" filepath="$PROJECT_DIR$/Testing_2.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/OptiWifiClientSide.iml" filepath="$PROJECT_DIR$/OptiWifiClientSide.iml" />
->>>>>>> 56fc6bc1330df71751ce6b8ad3363ece32f1a44c
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

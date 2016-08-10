@@ -7,27 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="easy2win.com.testing_2.MainActivity">
+    tools:context="com.example.optiwificlient.MainActivity">
 
 
-<<<<<<< HEAD
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/buttonScan"
-        android:layout_below="@+id/textStatus"
-        android:layout_centerHorizontal="true" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textStatus"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-=======
->>>>>>> 56fc6bc1330df71751ce6b8ad3363ece32f1a44c
 
 </RelativeLayout>
