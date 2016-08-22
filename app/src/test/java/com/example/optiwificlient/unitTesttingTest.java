@@ -4,11 +4,12 @@ import android.net.wifi.ScanResult;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Vighnesh on 8/7/2016.
@@ -37,20 +38,20 @@ public class unitTesttingTest {
         int actual = cr.map.size();
         System.out.println("Expected is "+expected);
         System.out.println("Actual is "+actual);
-        System.out.println(cr.map.get(q.Bssid));
+       // System.out.println(cr.map.get(q.Bssid));
         assertTrue(expected == actual);
     }// Tests for checking time_map
 
-    /*@Test
-   *//* public void time_map_test1(){
+   @Test
+    public void time_map_test1(){
         ScanresultReplica q = new ScanresultReplica(8);
         commonTestcode(q,6);
     }// end test
-*/
+
     @Test
     public void time_map_test2(){
         ScanresultReplica q = new ScanresultReplica("Misty",7);
-        commonTestcode(q,6);
+        commonTestcode(q,5);
     }// end test
 
 

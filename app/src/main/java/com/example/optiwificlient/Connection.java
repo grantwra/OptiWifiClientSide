@@ -6,16 +6,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Build;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -142,5 +143,5 @@ public class Connection extends BroadcastReceiver {
             }
         }
         return output;
-    }
-}
+    }// end  method
+}// end class
