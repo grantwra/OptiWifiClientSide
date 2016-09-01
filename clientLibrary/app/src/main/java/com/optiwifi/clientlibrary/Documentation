@@ -1,0 +1,38 @@
+What is this Library (com.optiwifi.clientlibrary)?
+    This is a client side library which, when used on an android device, will start a service to run
+    in the background and continually collect WiFi channel scans and write all the info contained in
+    these scans back to a file (scans.json) in json format. Information included in these scans are
+    BSSID, SSID, AutoJoinStatus, BlackListTimestamp, Capabilities, DistanceCm, DistanceSdCm, Frequency,
+    AutoJoinAbility, Number of Connections, Number of IP Config Failures, Number of Usage, Times Seen,
+    Timestamp, Trusted VS Untrusted Status, and the WiFi SSID. The library makes use of a map to ensure
+    no duplicate scans are written to the final json file.
+
+How to use this library:
+    Within an android app all the developer needs to do is import the library, create an instance of the
+    class 'Main' and then call the class '.start()' method passing in the apps context. Ex. '.start(this)'.
+
+How the map works:
+    Methods included:
+        -timeMapFill (Utils)
+        -clearMapOfOldScans (Utils)
+        -compareNewScans (Utils)
+
+    void timeMapFill:
+        Takes an argument of the new scan results list and this lists size. It will then loop through
+        this new list, if a scan result is not present in the map, it will be added to the map, else
+        if the scan result is present in the map already, its entry will be updated with the new
+        information.
+
+    void clearMapOfOldScans:
+        Takes an argument of the new scan results list and this lists size. It will then check the map
+        for old scan results (scan results that exist in both the new scan result list and the map but
+        with out dated timestamps), if such scan results exist they will be removed from the map.
+
+    ArrayList compareNewScans:
+        Takes an argument of the new scan results list. This method will create a new list, and return
+        said list, containing all the scans present in both the map and the new scan results list.
+        Assuming that both of the previous methods were executed without error the map should have
+        already been dynamically updated. This ensures that the ArrayList returns contains only new scan
+        results. If an old scan result exists in the map from an AP that was not scanned this time, then
+        it remains present in the map (but is not written to the json because it already was when it was
+        a new scan). This final ArrayList is the group of new scans finally written to the json.
